@@ -1,15 +1,44 @@
 <template>
-  <el-container>
-    
+  <el-container class="dead-center">
+    <div class="left-column">
+      <div>
+        <HomeButton
+          title="Marketeplace"
+          :image="require(`@/assets/marketplace_image.jpg`)"
+        />
+      </div>
+      <div>
+        <HomeButton
+          title="bottom-left"
+        />
+      </div>
+    </div>
+    <div class="right-column">
+      <div>
+        <HomeButton
+          title="top-right"
+        />
+      </div>
+      <div>
+        <HomeButton
+          title="Profile"
+          :image="require(`@/assets/profile_image.jpg`)"
+          :disabled="!this.userStore.loggedIn"
+        />
+      </div>
+    </div>
   </el-container>
 </template>
 
 <script>
 import { useClientStore } from '@/store/client';
 import { useUserStore } from '@/store/user';
+import HomeButton from '@/components/HomeButtonComp.vue';
+
 export default {
   name: 'HomeView',
   components:{
+    HomeButton
   },
   setup(){
     const clientStore = useClientStore();
@@ -18,103 +47,38 @@ export default {
     return {clientStore, userStore}
   },
   computed:{
-    getClients(){
-      return this.clientStore.getClients
-    },
-    filteredClients(){
-      return this.clientStore.getClients.filter(
-        client => 
-          !this.search || 
-           this.search.split(' ').every(w => 
-            client.firstName.toLowerCase().includes(w.toLowerCase()) ||
-            client.lastName.toLowerCase().includes(w.toLowerCase()) ||
-            client.car.toLowerCase().includes(w.toLowerCase()) ||
-            client.employee.firstName.toLowerCase().includes(w.toLowerCase())
-            )
-        )
-    },
-    indexStart() {
-      return (this.current - 1) * this.pageSize;
-    },
-    indexEnd() {
-      return this.indexStart + this.pageSize;
-    },
-    paginated(){
-      return this.filteredClients.slice(this.indexStart, this.indexEnd);
-    }
   },
   data() {
     return {
-      search: '',
-      current: 1,
-      pageSize: 2,
-      addDialogToggle: false,
-      detailsDialogToggle: false,
-      editDialogToggle: false,
-      deleteDialogToggle: false,
+
     }
   },
   methods:{
-    clickDetails(id){
-      this.detailsDialogToggle = !this.detailsDialogToggle;
-      this.clientStore.selectedClient = this.clientStore.getClientByID(id);
-    },
-    clickEdit(id){
-      this.editDialogToggle = !this.editDialogToggle;
-      this.clientStore.selectedClient = this.clientStore.getClientByID(id);
-    },
-    clickDelete(id){
-      this.deleteDialogToggle = !this.deleteDialogToggle;
-      console.log(id)
-      this.clientStore.selectedClient = this.clientStore.getClientByID(id);
-      this.clientStore.deleteClient();
-    },
+
   }
 }
 </script>
 
 <style scoped>
-.logged-out{
-  display: block;
-  position: fixed;
-  font-size: 28px;
-  color: #9fd3c7;
-  font-weight: bold;
-  height: 100%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%,0);
-}
-.search-header{
+.dead-center{
   display: flex;
-  align-items: center;
-  margin-bottom: 24px;
+  height: calc(100vh - 80px);
   justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  gap: 4px;
 }
-.searchbar{
-  width: 40vw;
-}
-.table{
+.left-column{
   display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transform: translate(0%,-35px);
 }
-.button-add{
+.right-column{
   display: flex;
-  justify-content: end;
-  margin: 4px;
-  margin-right: 28px;
+  flex-direction: column;
+  gap: 4px;
+  transform: translate(0%,35px);
 }
-.button{
-    background-color: #9fd3c7;
-    border-color: #9fd3c7;
-    width: fit-content;
-    padding: 10px;
-    --el-button-hover-bg-color: #bde6dc;
-    --el-button-hover-color: #bde6dc;
-    --el-button-hover-text-color: white;
-}
-.button:hover{
-    background-color: #bde6dc;
-    border-color: #bde6dc;
-    color: white;
-}
+
 </style>
